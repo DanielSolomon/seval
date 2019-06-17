@@ -2,9 +2,11 @@ import abc
 import ast
 import typing
 
-from .math_exp import MathExp
+from .literal_exp   import LiteralExp
+from .math_exp      import MathExp
 
 EVALABLES = (
+    LiteralExp,
     MathExp,
 )
 
