@@ -12,8 +12,14 @@ setuptools.setup(
     version             = '1.0.0',
     url                 = 'http://github.com/DanielSolomon/seval',
     author              = 'Daniel Solomon',
+    author_email        = 'DanielSolomon94.ds@gmail.com',
     license             = 'MIT',
     packages            = ['seval'],
     zip_safe            = False,
     install_requires    = reqs,
+    classifiers         = [
+        'Programming Language :: Python :: 3',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
+    ],
 )
