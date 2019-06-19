@@ -1,60 +1,33 @@
-import abc
 import ast
+import inspect
 import typing
 
-class Evalable(abc.ABC):
+class Evalable(type):
 
-    @abc.abstractmethod
-    def evalable(self):
-        pass
+    _NODES_HANDLERS = {}
 
-    def compile(self, s: str, *, expected: typing.Optional[ast.AST] = None):
-        """compiles string into AST, if expected is passed asserts its the expected type.
-        
-        :param s: string to be compiled into AST.
-        :type s: str
-        :param expected: expected ast class type to be returned, defaults to None
-        :type expected: typing.Optional[ast.AST], optional
-        """
+    def __new__(cls, name, bases, classdict, *, evalable_nodes):
+        new_handlers = []
+        for node in evalable_nodes:
+            if not issubclass(node, ast.AST):
+                raise ValueError(f'expected ast.AST subclass got: {node}')
+            key = node.__name__.lower()
+            if key in Evalable._NODES_HANDLERS:
+                raise ValueError(f'already got handler for {key}')
+            func = classdict.get(key)
+            if func is None:
+                raise ValueError(f'class {cls} does not implement handler for {key}')
+            if not isinstance(func, classmethod):
+                raise ValueError(f'func {func} is not a classmethod of class {cls}')
 
-        compiled_ast = compile(
-            source      = s,
-            filename    = '<unknown>',
-            mode        = 'eval',
-            flags       = ast.PyCF_ONLY_AST,
-        )
-
-        if expected is not None:
-            assert isinstance(compiled_ast, expected)
-        return compiled_ast
-
-    def allowed_nodes(self, ast_: ast.AST, *allowed: typing.List[ast.AST], **kwallowed: typing.Dict[ast.AST, typing.Callable]):
-        """walks on ast_ tree and checks that all nodes are allowed.
-        
-        :param ast_: ast to iterate
-        :type ast_: ast.AST
-        """
-
-        for n in ast.walk(ast_):
-            found = False
-            for a in allowed:
-                if isinstance(n, a):
-                    found = True
-                    break
-
-            # Checking if n was found in allowed.
-            if found:
-                continue
-
-            for a, func in kwallowed.items():
-                if isinstance(n, a) and func(n):
-                    found = True
-                    break
-
-            # Checking if n was found in kwallowed.
-            if found:
-                continue
-
-            # n isn't allowed.
-            return False
-        return True
+            # TODO: somehow inspect sig and class method
+            #if len(inspect.signature(func).parameters) != 1:
+                #raise ValueError(f'func {func} signature must have only one argument')
+            
+            new_handlers.append(key)
+        cls_ = super().__new__(cls, name, bases, classdict)
+        for handler in new_handlers:
+            Evalable._NODES_HANDLERS[handler] = getattr(cls_, handler)
+        return cls_
+            
+            

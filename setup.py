@@ -9,7 +9,7 @@ if reqs_file.is_file():
 
 setuptools.setup(
     name                = 'seval',
-    version             = '1.0.0',
+    version             = '1.1.0',
     url                 = 'http://github.com/DanielSolomon/seval',
     author              = 'Daniel Solomon',
     author_email        = 'DanielSolomon94.ds@gmail.com',
