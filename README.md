@@ -1,8 +1,9 @@
+[![Build Status](https://travis-ci.org/DanielSolomon/seval.svg?branch=master)](https://travis-ci.org/DanielSolomon/seval)
+
 SEVAL
 =====
 
 Safe evalutaion package which allows you to evaluate expressions safely (not only literals).
-[![Build Status](https://travis-ci.org/DanielSolomon/seval.svg?branch=master)](https://travis-ci.org/DanielSolomon/seval)
 
 What's safe?
 ------------
@@ -12,6 +13,13 @@ Currently `seval` evaluates:
 * arithmetic expressions
 * literals
 * any combination of the above
+
+Installing
+----------
+Install and update using [pip](https://pip.pypa.io/en/stable/quickstart/):
+```
+$ pip install seval
+```
 
 Usage
 -----
